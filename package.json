@@ -1,0 +1,27 @@
+{
+  "scripts": {
+    "build": "webpack --mode production && npx babel tmp/bundle.js --out-file dist/TiptapWordCounter.js"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.12.1",
+    "@tiptap/core": "^2.1.12",
+    "@tiptap/extension-character-count": "^2.1.12",
+    "@tiptap/extension-highlight": "^2.1.12",
+    "@tiptap/extension-image": "^2.1.12",
+    "@tiptap/extension-link": "^2.1.12",
+    "@tiptap/extension-subscript": "^2.1.12",
+    "@tiptap/extension-superscript": "^2.1.12",
+    "@tiptap/extension-text-style": "^2.1.12",
+    "@tiptap/extension-underline": "^2.1.12",
+    "@tiptap/html": "^2.1.12",
+    "@tiptap/pm": "^2.1.12",
+    "@tiptap/starter-kit": "^2.1.12"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.23.4",
+    "@babel/core": "^7.23.7",
+    "@babel/preset-env": "^7.23.8",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  }
+}
