@@ -1,9 +1,8 @@
 {
   "scripts": {
-    "build": "webpack --mode production && npx babel tmp/bundle.js --out-file dist/TiptapWordCounter.js"
+    "build-for-aquifer-server": "esbuild index.js --bundle --outfile=dist/TiptapUtilities.js --platform=node --target=node12"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.12.1",
     "@tiptap/core": "^2.1.12",
     "@tiptap/extension-character-count": "^2.1.12",
     "@tiptap/extension-highlight": "^2.1.12",
@@ -18,10 +17,6 @@
     "@tiptap/starter-kit": "^2.1.12"
   },
   "devDependencies": {
-    "@babel/cli": "^7.23.4",
-    "@babel/core": "^7.23.7",
-    "@babel/preset-env": "^7.23.8",
-    "webpack": "^5.89.0",
-    "webpack-cli": "^5.1.4"
+    "esbuild": "^0.19.11"
   }
 }
