@@ -1,4 +1,5 @@
 import { Editor, Mark } from "@tiptap/core";
+import { generateJSON, generateHTML } from "@tiptap/html";
 import Highlight from "@tiptap/extension-highlight";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
@@ -26,7 +27,6 @@ const extensions = [
 
 globalThis.getWordCountFromListOfTiptaps = (list) => {
     const editor = new Editor({extensions})
-    try {
         const jsonList = JSON.parse(list)
         return jsonList.reduce((total, currentJson) => {
             if (currentJson.tiptap) {
@@ -36,8 +36,19 @@ globalThis.getWordCountFromListOfTiptaps = (list) => {
                 return total
             }
         }, 0)
+}
+
+globalThis.parseHtmlAsJson = (html) => {
+    try {
+        return JSON.stringify(generateJSON(html, extensions));
     } catch (error) {
         console.error(error)
         return 0
     }
+}
+
+globalThis.getWordCount = (html) => {
+    const editor = new Editor({extensions});
+    editor.commands.setContent(generateJSON(html, extensions));
+    return editor.storage.characterCount.words();
 }
