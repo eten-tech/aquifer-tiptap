@@ -208,6 +208,11 @@
   resolved "https://registry.yarnpkg.com/@tiptap/extension-heading/-/extension-heading-2.1.14.tgz#868dd4eff41480d31c0cbab04d6d14a682318259"
   integrity sha512-x/AMzMANLvgbuwx4qe848WxF5W1Yq4bUjsduSu/5jonpH2sR5AFsH5VbWS8lfT34OdOI0Gs7p+k2NNuykWDPQA==
 
+"@tiptap/extension-heading@^2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@tiptap/extension-heading/-/extension-heading-2.2.1.tgz#3775b4358a8c8b19401030fb994e86710731e215"
+  integrity sha512-BI14qTOWTcabvobSo8QBAXQqmz4vQ9HjInK9btKEAJ027BHFk08n6YoovQDcTH5Z2nvwPN4N3RW0JupmgwflAQ==
+
 "@tiptap/extension-highlight@^2.1.12":
   version "2.1.14"
   resolved "https://registry.yarnpkg.com/@tiptap/extension-highlight/-/extension-highlight-2.1.14.tgz#ce427a031561e8e89436db0dec969cc9ea1c02af"
