@@ -48,12 +48,12 @@ globalThis.getWordCountFromListOfTiptaps = (list) => {
 }
 
 globalThis.parseHtmlAsJson = (html) => {
-    // try {
+    try {
         return JSON.stringify(generateJSON(html, extensions));
-    // } catch (error) {
-    //     console.error(error)
-    //     return 0
-    // }
+    } catch (error) {
+         console.error(error)
+         return 0
+    }
 }
 
 globalThis.getWordCount = (html) => {
