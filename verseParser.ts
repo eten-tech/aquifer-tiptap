@@ -172,67 +172,75 @@ const pad = (input: string): string => {
 };
 
 export const parseVerse = (inputVerse: string) => {
-    const bookIdentifier = inputVerse.split(' ')[0];
-    let startBnBookNumber = bookMapper(bookIdentifier);
-    let endBnBookNumber = startBnBookNumber;
-    inputVerse = inputVerse.replace(`${bookIdentifier} `, '');
-    const refs = inputVerse.split(',');
+    try {
+        const bookIdentifier = inputVerse.split(' ')[0];
+        let startBnBookNumber = bookMapper(bookIdentifier);
+        let endBnBookNumber = startBnBookNumber;
+        inputVerse = inputVerse.replace(`${bookIdentifier} `, '');
+        const refs = inputVerse.split(',');
 
-    let lastChapter = '0';
-    const passages: any[] = [];
-    for (const i in refs) {
-        const ref = refs[i];
+        let lastChapter = '0';
+        const passages: any[] = [];
+        for (const i in refs) {
+            const ref = refs[i];
 
-        const verseParts = ref.split(':');
-        let startChapter: string;
-        let endChapter: string;
-        let startVerse: string;
-        let endVerse: string;
-        let verseRange: string[];
+            const verseParts = ref.split(':');
+            let startChapter: string;
+            let endChapter: string;
+            let startVerse: string;
+            let endVerse: string;
+            let verseRange: string[];
 
-        if (verseParts.length === 4 && verseParts[1].indexOf('-') > -1) {
-            let bookSplit = verseParts[1].split('-');
-            startChapter = verseParts[0];
-            startVerse = bookSplit[0];
-            endBnBookNumber = bookMapper(bookSplit[1]);
-            endChapter = verseParts[2];
-            endVerse = verseParts[3];
-        } else if (verseParts.length === 3) {
-            startChapter = verseParts[0];
-            let verseBookSplit = verseParts[1].split('-');
-            startVerse = verseBookSplit[0];
-            let bookChapterSplit = verseBookSplit[1].split(' ');
-            endBnBookNumber = bookMapper(bookChapterSplit[0]);
-            endChapter = bookChapterSplit[1];
-            endVerse = verseParts[2];
-        } else if (verseParts.length === 1) {
-            startChapter = lastChapter;
-            endChapter = startChapter;
-            verseRange = verseParts[0].split('-');
-            startVerse = verseRange[0];
-            endVerse = verseRange.length > 1 ? verseRange[1] : startVerse;
-        } else if (verseParts.length === 2) {
-            startChapter = verseParts[0];
-            endChapter = startChapter;
-            lastChapter = startChapter;
-            verseRange = verseParts[1].split('-');
-            startVerse = verseRange[0];
-            endVerse = verseRange.length > 1 ? verseRange[1] : startVerse;
-        } else {
-            throw Error(`Error on: ${inputVerse}`);
+            if (verseParts.length === 3 && verseParts[1].indexOf(' ') > -1) {
+                let bookSplit = verseParts[1].split('-');
+                let bookChapterSplit = bookSplit[1].split(' ');
+                startChapter = verseParts[0];
+                startVerse = bookSplit[0];
+                endBnBookNumber = bookMapper(bookChapterSplit[0]);
+                endChapter = bookChapterSplit[1];
+                endVerse = verseParts[2];
+            } else if (verseParts.length === 3) {
+                startChapter = verseParts[0];
+                let verseBookSplit = verseParts[1].split('-');
+                startVerse = verseBookSplit[0];
+                endChapter = verseBookSplit[1];
+                endVerse = verseParts[2];
+            } else if (verseParts.length === 1) {
+                startChapter = lastChapter;
+                endChapter = startChapter;
+                verseRange = verseParts[0].split('-');
+                startVerse = verseRange[0];
+                endVerse = verseRange.length > 1 ? verseRange[1] : startVerse;
+            } else if (verseParts.length === 2) {
+                startChapter = verseParts[0];
+                endChapter = startChapter;
+                lastChapter = startChapter;
+                verseRange = verseParts[1].split('-');
+                startVerse = verseRange[0];
+                endVerse = verseRange.length > 1 ? verseRange[1] : startVerse;
+            } else {
+                throw Error(`Error on: ${inputVerse}`);
+            }
+        
+
+            try {
+                passages.push({
+                    startVerse: parseInt(`1${pad(startBnBookNumber)}${pad(startChapter)}${pad(startVerse)}`),
+                    endVerse: parseInt(`1${pad(endBnBookNumber)}${pad(endChapter)}${pad(endVerse)}`),
+                });
+            } catch (e) {
+                throw Error(`Bad pad: ${inputVerse}`);
+            }
         }
 
-        try {
-            passages.push({
-                startVerse: parseInt(`1${pad(startBnBookNumber)}${pad(startChapter)}${pad(startVerse)}`),
-                endVerse: parseInt(`1${pad(endBnBookNumber)}${pad(endChapter)}${pad(endVerse)}`),
-            });
-        } catch (e) {
-            throw Error(`Bad pad: ${inputVerse}`);
-        }
+        return passages;
+
+    } catch(e)
+    {
+        throw Error(`Error on this verse: ${inputVerse}`);
     }
 
-    return passages;
+
 };
 
 
