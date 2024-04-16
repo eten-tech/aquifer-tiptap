@@ -131,22 +131,6 @@ export let customExtensions = {
         parseHTML() {
             return [
                 {
-                    tag: 'a',
-                    getAttrs: (node) => {
-                        let href = (node as HTMLElement).getAttribute('href');
-                        if (href === null) return false;
-
-                        if (href.indexOf('?item=') !== -1) {
-                            return {
-                                resourceType: 'tyndaleBibleDictionary',
-                                resourceId: `${href?.split('=')[1]}-1.6`,
-                            };
-                        }
-
-                        return false;
-                    },
-                },
-                {
                     tag: 'span',
                     getAttrs: (node) => {
                         let span = (node as HTMLElement);
