@@ -1,28 +1,37 @@
 import { Editor, Mark } from "@tiptap/core";
 import { generateJSON, generateHTML } from "@tiptap/html";
-import Highlight from "@tiptap/extension-highlight";
-import Link from "@tiptap/extension-link";
-import Image from "@tiptap/extension-image";
-import Subscript from "@tiptap/extension-subscript";
-import Superscript from "@tiptap/extension-superscript";
 import TextStyle from "@tiptap/extension-text-style";
 import Underline from "@tiptap/extension-underline";
-import StarterKit from "@tiptap/starter-kit";
 import CharacterCount from "@tiptap/extension-character-count";
 import './dom-mocks.js'
+import { customExtensions } from './customExtensions';
+import Document from '@tiptap/extension-document';
+import Text from '@tiptap/extension-text';
+import Image from '@tiptap/extension-image';
+import ListItem from '@tiptap/extension-list-item';
+import BulletList from '@tiptap/extension-bullet-list';
+import OrderedList from '@tiptap/extension-ordered-list';
+import Link from '@tiptap/extension-link';
+import Bold from '@tiptap/extension-bold';
+
 
 const extensions = [
-    StarterKit,
-    Image,
-    Link,
-    Underline,
-    Highlight,
-    Subscript,
-    Superscript,
     TextStyle,
+    Image,
+    Underline,
     CharacterCount,
-    Mark.create({ name: 'bibleReference', renderHTML: () => ['span'] }),
-    Mark.create({ name: 'resourceReference', renderHTML: () => ['span'] }),
+    Document,
+    Text,
+    customExtensions.paragraph,
+    customExtensions.heading,
+    Link,
+    BulletList,
+    ListItem,
+    OrderedList,
+    Bold,
+    customExtensions.italic,
+    customExtensions.bnBibleResourceReference,
+    customExtensions.bnResourceReference,
 ];
 
 globalThis.getWordCountFromListOfTiptaps = (list) => {
@@ -42,8 +51,8 @@ globalThis.parseHtmlAsJson = (html) => {
     try {
         return JSON.stringify(generateJSON(html, extensions));
     } catch (error) {
-        console.error(error)
-        return 0
+         console.error(error)
+         return 0
     }
 }
 
