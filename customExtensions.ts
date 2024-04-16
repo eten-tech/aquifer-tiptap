@@ -146,6 +146,19 @@ export let customExtensions = {
                         return false;
                     },
                 },
+                {
+                    tag: 'span',
+                    getAttrs: (node) => {
+                        let span = (node as HTMLElement);
+                        let resourceType = span.getAttribute('data-resourceType');
+                        let resourceId = span.getAttribute('data-resourceid')
+
+                        return {
+                            resourceType,
+                            resourceId
+                        }
+                    }
+                },
             ];
         },
         renderHTML({ HTMLAttributes }) {
