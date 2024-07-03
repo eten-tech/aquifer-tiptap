@@ -1,80 +1,6 @@
-﻿import { Heading } from '@tiptap/extension-heading';
-import Italic from '@tiptap/extension-italic';
-import { Mark } from '@tiptap/core';
-import Paragraph from '@tiptap/extension-paragraph';
-import { parseVerse } from './verseParser';
+﻿import { Mark } from '@tiptap/core';
 
 export let customExtensions = {
-    heading: Heading.extend({
-        priority: 1001,
-        parseHTML() {
-            return [
-                {
-                    tag: 'h1',
-                    attrs: { level: 1 },
-                },
-                {
-                    tag: 'h2',
-                    attrs: { level: 2 },
-                },
-                {
-                    tag: 'h3',
-                    attrs: { level: 3 },
-                },
-                {
-                    tag: 'p',
-                    getAttrs: (node) => {
-                        switch ((node as HTMLElement).className) {
-                            case 'h1':
-                            case 'intro-h1':
-                                return { level: 1 };
-                            case 'h2':
-                            case 'intro-h2':
-                                return { level: 2 };
-                            case 'h3':
-                            case 'intro-h3':
-                                return { level: 3 };
-                        }
-
-                        return false;
-                    },
-                },
-                {
-                    tag: 'p',
-                    getAttrs: (node) => (node as HTMLElement).className === 'h2' && { level: 2 },
-                },
-            ];
-        },
-    }),
-    italic: Italic.extend({
-        parseHTML() {
-            return [
-                {
-                    tag: 'em',
-                },
-                {
-                    tag: 'i',
-                    getAttrs: (node) => (node as HTMLElement).style.fontStyle !== 'normal' && null,
-                },
-                {
-                    style: 'font-style=italic',
-                },
-                {
-                    tag: 'span',
-                    getAttrs: (node) => (node as HTMLElement).className === 'ital' && null,
-                },
-            ];
-        },
-    }),
-    paragraph: Paragraph.extend({
-        addAttributes() {
-            return {
-                class: {
-                    parseHTML: (e) => e.getAttribute('class'),
-                },
-            };
-        },
-    }),
     bnBibleResourceReference: Mark.create({
         name: 'bibleReference',
         priority: 1001,
@@ -94,24 +20,40 @@ export let customExtensions = {
         parseHTML() {
             return [
                 {
-                    tag: 'a',
+                    tag: 'span',
                     getAttrs: (node) => {
-                        let href = (node as HTMLElement).getAttribute('href');
-                        if (href === null) return false;
-
-                        if (href.indexOf('?bref=') !== -1) {
+                        const bnType = (node as HTMLElement).getAttribute('data-bnType');
+                        if (bnType === 'bibleReference') {
                             return {
-                                verses: parseVerse(href?.split('=')[1]),
+                                verses: [
+                                    {
+                                        startVerse: (node as HTMLElement).getAttribute('data-startVerse'),
+                                        endVerse: (node as HTMLElement).getAttribute('data-endVerse'),
+                                    },
+                                ],
                             };
                         }
-
+    
                         return false;
                     },
                 },
             ];
         },
         renderHTML({ HTMLAttributes }) {
-            return ['span', { style: { color: 'green' } }, 0];
+            const startVerse = HTMLAttributes.verses[0].startVerse;
+            const endVerse = HTMLAttributes.verses[0].endVerse;
+    
+            return [
+                'span',
+                {
+                    // id: spanId,
+                    'data-bnType': 'bibleReference',
+                    'data-startVerse': startVerse,
+                    'data-endVerse': endVerse,
+                    style: 'color: green',
+                },
+                0,
+            ];
         },
     }),
     bnResourceReference: Mark.create({
@@ -131,25 +73,79 @@ export let customExtensions = {
         parseHTML() {
             return [
                 {
-                    tag: 'a',
+                    tag: 'span',
                     getAttrs: (node) => {
-                        let href = (node as HTMLElement).getAttribute('href');
-                        if (href === null) return false;
-
-                        if (href.indexOf('?item=') !== -1) {
+                        const bnType = (node as HTMLElement).getAttribute('data-bnType');
+                        if (bnType === 'resourceReference') {
                             return {
-                                resourceType: 'tyndaleBibleDictionary',
-                                resourceId: `${href?.split('=')[1]}-1.6`,
+                                resourceId: (node as HTMLElement).getAttribute('data-resourceId'),
+                                resourceType: (node as HTMLElement).getAttribute('data-resourceType'),
                             };
                         }
-
+    
                         return false;
                     },
                 },
             ];
         },
         renderHTML({ HTMLAttributes }) {
-            return ['span', { style: { color: 'blue' } }, 0];
+            return [
+                'span',
+                {
+                    'data-bnType': 'resourceReference',
+                    'data-resourceId': HTMLAttributes.resourceId,
+                    'data-resourceType': HTMLAttributes.resourceType,
+                    style: 'color: blue',
+                },
+                0,
+            ];
         },
     }),
-};
+    commentsMark : Mark.create({
+        name: 'comments',
+        priority: 1001,
+        keepOnSplit: false,
+        excludes: '',
+        addAttributes() {
+            return {
+                comments: {
+                    default: [
+                        {
+                            threadId: null,
+                        },
+                    ],
+                },
+            };
+        },
+        parseHTML() {
+            return [
+                {
+                    tag: 'span',
+                    getAttrs: (node) => {
+                        const bnType = (node as HTMLElement).getAttribute('data-bnType');
+                        if (bnType === 'comments') {
+                            return {
+                                comments: {
+                                    threadId: (node as HTMLElement).getAttribute('data-threadId'),
+                                },
+                            };
+                        }
+    
+                        return false;
+                    },
+                },
+            ];
+        },
+        renderHTML({ HTMLAttributes }) {
+            return [
+                'span',
+                {
+                    'data-bnType': 'comments',
+                    'data-threadId': HTMLAttributes.comments.threadId,
+                    class: 'bg-primary/20 rounded inline-comment-span',
+                },
+                0,
+            ];
+        },
+    })
+}
