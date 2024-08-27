@@ -13,7 +13,9 @@ import BulletList from '@tiptap/extension-bullet-list';
 import OrderedList from '@tiptap/extension-ordered-list';
 import Link from '@tiptap/extension-link';
 import Bold from '@tiptap/extension-bold';
-
+import Heading from "@tiptap/extension-heading";
+import Italic from '@tiptap/extension-italic';
+import Paragraph from '@tiptap/extension-paragraph';
 
 const extensions = [
     TextStyle,
@@ -22,16 +24,17 @@ const extensions = [
     CharacterCount,
     Document,
     Text,
-    customExtensions.paragraph,
-    customExtensions.heading,
+    Paragraph,
+    Heading,
     Link,
     BulletList,
     ListItem,
     OrderedList,
     Bold,
-    customExtensions.italic,
+    Italic,
     customExtensions.bnBibleResourceReference,
     customExtensions.bnResourceReference,
+    customExtensions.commentsMark,
 ];
 
 globalThis.getWordCountFromListOfTiptaps = (list) => {
@@ -53,6 +56,15 @@ globalThis.parseHtmlAsJson = (html) => {
     } catch (error) {
          console.error(error)
          return 0
+    }
+}
+
+globalThis.parseJsonAsHtml = (json) => {
+    try {
+        return generateHTML(JSON.parse(json)[0].tiptap, extensions);
+    } catch (error) {
+          console.error(error)
+          return 0
     }
 }
 

@@ -21869,6 +21869,9 @@ var VHTMLDocument = class extends VDocument {
 function createDocument2() {
   return new VDocument();
 }
+function createHTMLDocument() {
+  return new VHTMLDocument();
+}
 var document2 = createDocument2();
 var h = hFactory({ document: document2 });
 var attrRe = /([^=\s]+)(\s*=\s*(("([^"]*)")|('([^']*)')|[^>\s]+))?/gm;
@@ -22031,6 +22034,17 @@ xml.firstLine = '<?xml version="1.0" encoding="utf-8"?>';
 xml.xml = true;
 
 // node_modules/@tiptap/html/dist/index.js
+function getHTMLFromFragment2(doc3, schema) {
+  const document3 = DOMSerializer.fromSchema(schema).serializeFragment(doc3.content, {
+    document: createHTMLDocument()
+  });
+  return document3.render();
+}
+function generateHTML(doc3, extensions3) {
+  const schema = getSchema(extensions3);
+  const contentNode = Node.fromJSON(schema, doc3);
+  return getHTMLFromFragment2(contentNode, schema);
+}
 function generateJSON(html2, extensions3) {
   const schema = getSchema(extensions3);
   const dom = parseHTML(html2);
@@ -22248,486 +22262,77 @@ globalThis.ClipboardEvent = MockClipboardEvent;
 globalThis.innerHeight = 0;
 globalThis.window = mockWindow;
 
-// node_modules/@tiptap/extension-heading/dist/index.js
-var Heading = Node2.create({
-  name: "heading",
-  addOptions() {
-    return {
-      levels: [1, 2, 3, 4, 5, 6],
-      HTMLAttributes: {}
-    };
-  },
-  content: "inline*",
-  group: "block",
-  defining: true,
-  addAttributes() {
-    return {
-      level: {
-        default: 1,
-        rendered: false
-      }
-    };
-  },
-  parseHTML() {
-    return this.options.levels.map((level) => ({
-      tag: `h${level}`,
-      attrs: { level }
-    }));
-  },
-  renderHTML({ node, HTMLAttributes }) {
-    const hasLevel = this.options.levels.includes(node.attrs.level);
-    const level = hasLevel ? node.attrs.level : this.options.levels[0];
-    return [`h${level}`, mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
-  },
-  addCommands() {
-    return {
-      setHeading: (attributes) => ({ commands: commands2 }) => {
-        if (!this.options.levels.includes(attributes.level)) {
-          return false;
-        }
-        return commands2.setNode(this.name, attributes);
-      },
-      toggleHeading: (attributes) => ({ commands: commands2 }) => {
-        if (!this.options.levels.includes(attributes.level)) {
-          return false;
-        }
-        return commands2.toggleNode(this.name, "paragraph", attributes);
-      }
-    };
-  },
-  addKeyboardShortcuts() {
-    return this.options.levels.reduce((items, level) => ({
-      ...items,
-      ...{
-        [`Mod-Alt-${level}`]: () => this.editor.commands.toggleHeading({ level })
-      }
-    }), {});
-  },
-  addInputRules() {
-    return this.options.levels.map((level) => {
-      return textblockTypeInputRule({
-        find: new RegExp(`^(#{1,${level}})\\s$`),
-        type: this.type,
-        getAttributes: {
-          level
-        }
-      });
-    });
-  }
-});
-
-// node_modules/@tiptap/extension-italic/dist/index.js
-var starInputRegex = /(?:^|\s)((?:\*)((?:[^*]+))(?:\*))$/;
-var starPasteRegex = /(?:^|\s)((?:\*)((?:[^*]+))(?:\*))/g;
-var underscoreInputRegex = /(?:^|\s)((?:_)((?:[^_]+))(?:_))$/;
-var underscorePasteRegex = /(?:^|\s)((?:_)((?:[^_]+))(?:_))/g;
-var Italic = Mark2.create({
-  name: "italic",
-  addOptions() {
-    return {
-      HTMLAttributes: {}
-    };
-  },
-  parseHTML() {
-    return [
-      {
-        tag: "em"
-      },
-      {
-        tag: "i",
-        getAttrs: (node) => node.style.fontStyle !== "normal" && null
-      },
-      {
-        style: "font-style=italic"
-      }
-    ];
-  },
-  renderHTML({ HTMLAttributes }) {
-    return ["em", mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
-  },
-  addCommands() {
-    return {
-      setItalic: () => ({ commands: commands2 }) => {
-        return commands2.setMark(this.name);
-      },
-      toggleItalic: () => ({ commands: commands2 }) => {
-        return commands2.toggleMark(this.name);
-      },
-      unsetItalic: () => ({ commands: commands2 }) => {
-        return commands2.unsetMark(this.name);
-      }
-    };
-  },
-  addKeyboardShortcuts() {
-    return {
-      "Mod-i": () => this.editor.commands.toggleItalic(),
-      "Mod-I": () => this.editor.commands.toggleItalic()
-    };
-  },
-  addInputRules() {
-    return [
-      markInputRule({
-        find: starInputRegex,
-        type: this.type
-      }),
-      markInputRule({
-        find: underscoreInputRegex,
-        type: this.type
-      })
-    ];
-  },
-  addPasteRules() {
-    return [
-      markPasteRule({
-        find: starPasteRegex,
-        type: this.type
-      }),
-      markPasteRule({
-        find: underscorePasteRegex,
-        type: this.type
-      })
-    ];
-  }
-});
-
-// node_modules/@tiptap/extension-paragraph/dist/index.js
-var Paragraph = Node2.create({
-  name: "paragraph",
-  priority: 1e3,
-  addOptions() {
-    return {
-      HTMLAttributes: {}
-    };
-  },
-  group: "block",
-  content: "inline*",
-  parseHTML() {
-    return [
-      { tag: "p" }
-    ];
-  },
-  renderHTML({ HTMLAttributes }) {
-    return ["p", mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
-  },
-  addCommands() {
-    return {
-      setParagraph: () => ({ commands: commands2 }) => {
-        return commands2.setNode(this.name);
-      }
-    };
-  },
-  addKeyboardShortcuts() {
-    return {
-      "Mod-Alt-0": () => this.editor.commands.setParagraph()
-    };
-  }
-});
-
-// verseParser.ts
-var bookMapper = (book) => {
-  switch (book.toUpperCase()) {
-    case "GEN":
-      return "01";
-    case "EXO":
-      return "02";
-    case "LEV":
-      return "03";
-    case "NUM":
-      return "04";
-    case "DEU":
-      return "5";
-    case "JOS":
-      return "06";
-    case "JDG":
-      return "07";
-    case "RUT":
-      return "08";
-    case "1SA":
-      return "09";
-    case "2SA":
-      return "10";
-    case "1KI":
-      return "11";
-    case "2KI":
-      return "12";
-    case "1CH":
-      return "13";
-    case "2CH":
-      return "14";
-    case "EZR":
-      return "15";
-    case "NEH":
-      return "16";
-    case "EST":
-      return "17";
-    case "JOB":
-      return "18";
-    case "PSA":
-      return "19";
-    case "PRO":
-      return "20";
-    case "ECC":
-      return "21";
-    case "SNG":
-      return "22";
-    case "ISA":
-      return "23";
-    case "JER":
-      return "24";
-    case "LAM":
-      return "25";
-    case "EZK":
-      return "26";
-    case "DAN":
-      return "27";
-    case "HOS":
-      return "28";
-    case "JOL":
-      return "29";
-    case "AMO":
-      return "30";
-    case "OBA":
-      return "31";
-    case "JON":
-      return "32";
-    case "MIC":
-      return "33";
-    case "NAH":
-      return "34";
-    case "HAB":
-      return "35";
-    case "ZEP":
-      return "36";
-    case "HAG":
-      return "37";
-    case "ZEC":
-      return "38";
-    case "MAL":
-      return "39";
-    case "MAT":
-      return "41";
-    case "MRK":
-      return "42";
-    case "LUK":
-      return "43";
-    case "JHN":
-      return "44";
-    case "ACT":
-      return "45";
-    case "ROM":
-      return "46";
-    case "1CO":
-      return "47";
-    case "2CO":
-      return "48";
-    case "GAL":
-      return "49";
-    case "EPH":
-      return "50";
-    case "PHP":
-      return "51";
-    case "COL":
-      return "52";
-    case "1TH":
-      return "53";
-    case "2TH":
-      return "54";
-    case "1TI":
-      return "55";
-    case "2TI":
-      return "56";
-    case "TIT":
-      return "57";
-    case "PHM":
-      return "58";
-    case "HEB":
-      return "59";
-    case "JAS":
-      return "60";
-    case "1PE":
-      return "61";
-    case "2PE":
-      return "62";
-    case "1JN":
-      return "63";
-    case "2JN":
-      return "64";
-    case "3JN":
-      return "65";
-    case "JUD":
-      return "66";
-    case "REV":
-      return "67";
-    case "TOB":
-      return "68";
-    case "JDT":
-      return "69";
-    case "ESG":
-      return "70";
-    case "WIS":
-      return "71";
-    case "SIR":
-      return "72";
-    case "BAR":
-      return "73";
-    case "BEL":
-      return "77";
-    case "1MA":
-      return "78";
-    case "2MA":
-      return "79";
-    case "3MA":
-      return "80";
-    case "4MA":
-      return "81";
-    case "1ES":
-      return "82";
-    case "2ES":
-      return "83";
-    default:
-      throw Error(`Missing book: ${book}`);
-  }
-};
-var pad = (input) => {
-  try {
-    return input.padStart(3, "0");
-  } catch (e) {
-    throw Error(`Bad pad: ${input}`);
-  }
-};
-var parseVerse = (inputVerse) => {
-  try {
-    const bookIdentifier = inputVerse.split(" ")[0];
-    let startBnBookNumber = bookMapper(bookIdentifier);
-    let endBnBookNumber = startBnBookNumber;
-    inputVerse = inputVerse.replace(`${bookIdentifier} `, "");
-    const refs = inputVerse.split(",");
-    let lastChapter = "0";
-    const passages = [];
-    for (const i in refs) {
-      const ref = refs[i];
-      const verseParts = ref.split(":");
-      let startChapter;
-      let endChapter;
-      let startVerse;
-      let endVerse;
-      let verseRange;
-      if (verseParts.length === 3 && verseParts[1].indexOf(" ") > -1) {
-        let bookSplit = verseParts[1].split("-");
-        let bookChapterSplit = bookSplit[1].split(" ");
-        startChapter = verseParts[0];
-        startVerse = bookSplit[0];
-        endBnBookNumber = bookMapper(bookChapterSplit[0]);
-        endChapter = bookChapterSplit[1];
-        endVerse = verseParts[2];
-      } else if (verseParts.length === 3) {
-        startChapter = verseParts[0];
-        let verseBookSplit = verseParts[1].split("-");
-        startVerse = verseBookSplit[0];
-        endChapter = verseBookSplit[1];
-        endVerse = verseParts[2];
-      } else if (verseParts.length === 1) {
-        startChapter = lastChapter;
-        endChapter = startChapter;
-        verseRange = verseParts[0].split("-");
-        startVerse = verseRange[0];
-        endVerse = verseRange.length > 1 ? verseRange[1] : startVerse;
-      } else if (verseParts.length === 2) {
-        startChapter = verseParts[0];
-        endChapter = startChapter;
-        lastChapter = startChapter;
-        verseRange = verseParts[1].split("-");
-        startVerse = verseRange[0];
-        endVerse = verseRange.length > 1 ? verseRange[1] : startVerse;
-      } else {
-        throw Error(`Error on: ${inputVerse}`);
-      }
-      try {
-        passages.push({
-          startVerse: parseInt(`1${pad(startBnBookNumber)}${pad(startChapter)}${pad(startVerse)}`),
-          endVerse: parseInt(`1${pad(endBnBookNumber)}${pad(endChapter)}${pad(endVerse)}`)
-        });
-      } catch (e) {
-        throw Error(`Bad pad: ${inputVerse}`);
-      }
-    }
-    return passages;
-  } catch (e) {
-    throw Error(`Error on this verse: ${inputVerse}`);
-  }
-};
-
 // customExtensions.ts
 var customExtensions = {
-  heading: Heading.extend({
-    priority: 1001,
-    parseHTML() {
-      return [
-        {
-          tag: "h1",
-          attrs: { level: 1 }
-        },
-        {
-          tag: "h2",
-          attrs: { level: 2 }
-        },
-        {
-          tag: "h3",
-          attrs: { level: 3 }
-        },
-        {
-          tag: "p",
-          getAttrs: (node) => {
-            switch (node.className) {
-              case "h1":
-              case "intro-h1":
-                return { level: 1 };
-              case "h2":
-              case "intro-h2":
-                return { level: 2 };
-              case "h3":
-              case "intro-h3":
-                return { level: 3 };
-            }
-            return false;
-          }
-        },
-        {
-          tag: "p",
-          getAttrs: (node) => node.className === "h2" && { level: 2 }
-        }
-      ];
-    }
-  }),
-  italic: Italic.extend({
-    parseHTML() {
-      return [
-        {
-          tag: "em"
-        },
-        {
-          tag: "i",
-          getAttrs: (node) => node.style.fontStyle !== "normal" && null
-        },
-        {
-          style: "font-style=italic"
-        },
-        {
-          tag: "span",
-          getAttrs: (node) => node.className === "ital" && null
-        }
-      ];
-    }
-  }),
-  paragraph: Paragraph.extend({
-    addAttributes() {
-      return {
-        class: {
-          parseHTML: (e) => e.getAttribute("class")
-        }
-      };
-    }
-  }),
+  // heading: Heading.extend({
+  //     priority: 1001,
+  //     parseHTML() {
+  //         return [
+  //             {
+  //                 tag: 'h1',
+  //                 attrs: { level: 1 },
+  //             },
+  //             {
+  //                 tag: 'h2',
+  //                 attrs: { level: 2 },
+  //             },
+  //             {
+  //                 tag: 'h3',
+  //                 attrs: { level: 3 },
+  //             },
+  //             {
+  //                 tag: 'p',
+  //                 getAttrs: (node) => {
+  //                     switch ((node as HTMLElement).className) {
+  //                         case 'h1':
+  //                         case 'intro-h1':
+  //                             return { level: 1 };
+  //                         case 'h2':
+  //                         case 'intro-h2':
+  //                             return { level: 2 };
+  //                         case 'h3':
+  //                         case 'intro-h3':
+  //                             return { level: 3 };
+  //                     }
+  //                     return false;
+  //                 },
+  //             },
+  //             {
+  //                 tag: 'p',
+  //                 getAttrs: (node) => (node as HTMLElement).className === 'h2' && { level: 2 },
+  //             },
+  //         ];
+  //     },
+  // }),
+  // italic: Italic.extend({
+  //     parseHTML() {
+  //         return [
+  //             {
+  //                 tag: 'em',
+  //             },
+  //             {
+  //                 tag: 'i',
+  //                 getAttrs: (node) => (node as HTMLElement).style.fontStyle !== 'normal' && null,
+  //             },
+  //             {
+  //                 style: 'font-style=italic',
+  //             },
+  //             {
+  //                 tag: 'span',
+  //                 getAttrs: (node) => (node as HTMLElement).className === 'ital' && null,
+  //             },
+  //         ];
+  //     },
+  // }),
+  // paragraph: Paragraph.extend({
+  //     addAttributes() {
+  //         return {
+  //             class: {
+  //                 parseHTML: (e) => e.getAttribute('class'),
+  //             },
+  //         };
+  //     },
+  // }),
   bnBibleResourceReference: Mark2.create({
     name: "bibleReference",
     priority: 1001,
@@ -22747,14 +22352,17 @@ var customExtensions = {
     parseHTML() {
       return [
         {
-          tag: "a",
+          tag: "span",
           getAttrs: (node) => {
-            let href = node.getAttribute("href");
-            if (href === null)
-              return false;
-            if (href.indexOf("?bref=") !== -1) {
+            const bnType = node.getAttribute("data-bnType");
+            if (bnType === "bibleReference") {
               return {
-                verses: parseVerse(href == null ? void 0 : href.split("=")[1])
+                verses: [
+                  {
+                    startVerse: node.getAttribute("data-startVerse"),
+                    endVerse: node.getAttribute("data-endVerse")
+                  }
+                ]
               };
             }
             return false;
@@ -22763,7 +22371,20 @@ var customExtensions = {
       ];
     },
     renderHTML({ HTMLAttributes }) {
-      return ["span", { style: { color: "green" } }, 0];
+      const startVerse = HTMLAttributes.verses[0].startVerse;
+      const endVerse = HTMLAttributes.verses[0].endVerse;
+      return [
+        "span",
+        {
+          // id: spanId,
+          "data-bnType": "bibleReference",
+          "data-startVerse": startVerse,
+          "data-endVerse": endVerse,
+          style: "color: green"
+          // onClick: `onBibleReferenceClick('${spanId}', '${startVerse}', '${endVerse}')`,
+        },
+        0
+      ];
     }
   }),
   bnResourceReference: Mark2.create({
@@ -22783,15 +22404,13 @@ var customExtensions = {
     parseHTML() {
       return [
         {
-          tag: "a",
+          tag: "span",
           getAttrs: (node) => {
-            let href = node.getAttribute("href");
-            if (href === null)
-              return false;
-            if (href.indexOf("?item=") !== -1) {
+            const bnType = node.getAttribute("data-bnType");
+            if (bnType === "resourceReference") {
               return {
-                resourceType: "tyndaleBibleDictionary",
-                resourceId: `${href == null ? void 0 : href.split("=")[1]}-1.6`
+                resourceId: node.getAttribute("data-resourceId"),
+                resourceType: node.getAttribute("data-resourceType")
               };
             }
             return false;
@@ -22800,7 +22419,64 @@ var customExtensions = {
       ];
     },
     renderHTML({ HTMLAttributes }) {
-      return ["span", { style: { color: "blue" } }, 0];
+      return [
+        "span",
+        {
+          "data-bnType": "resourceReference",
+          "data-resourceId": HTMLAttributes.resourceId,
+          "data-resourceType": HTMLAttributes.resourceType,
+          style: "color: blue"
+        },
+        0
+      ];
+    }
+  }),
+  commentsMark: Mark2.create({
+    name: "comments",
+    priority: 1001,
+    keepOnSplit: false,
+    excludes: "",
+    addAttributes() {
+      return {
+        comments: {
+          default: [
+            {
+              threadId: null
+            }
+          ]
+        }
+      };
+    },
+    parseHTML() {
+      return [
+        {
+          tag: "span",
+          getAttrs: (node) => {
+            const bnType = node.getAttribute("data-bnType");
+            if (bnType === "comments") {
+              return {
+                comments: {
+                  threadId: node.getAttribute("data-threadId")
+                }
+              };
+            }
+            return false;
+          }
+        }
+      ];
+    },
+    renderHTML({ HTMLAttributes }) {
+      return [
+        "span",
+        {
+          // id: spanId,
+          "data-bnType": "comments",
+          "data-threadId": HTMLAttributes.comments.threadId,
+          class: "bg-primary/20 rounded inline-comment-span"
+          // onClick: `onInlineCommentClick(${threadId}, '${spanId}')`,
+        },
+        0
+      ];
     }
   })
 };
@@ -23447,10 +23123,10 @@ var Link = Mark2.create({
 });
 
 // node_modules/@tiptap/extension-bold/dist/index.js
-var starInputRegex2 = /(?:^|\s)((?:\*\*)((?:[^*]+))(?:\*\*))$/;
-var starPasteRegex2 = /(?:^|\s)((?:\*\*)((?:[^*]+))(?:\*\*))/g;
-var underscoreInputRegex2 = /(?:^|\s)((?:__)((?:[^__]+))(?:__))$/;
-var underscorePasteRegex2 = /(?:^|\s)((?:__)((?:[^__]+))(?:__))/g;
+var starInputRegex = /(?:^|\s)((?:\*\*)((?:[^*]+))(?:\*\*))$/;
+var starPasteRegex = /(?:^|\s)((?:\*\*)((?:[^*]+))(?:\*\*))/g;
+var underscoreInputRegex = /(?:^|\s)((?:__)((?:[^__]+))(?:__))$/;
+var underscorePasteRegex = /(?:^|\s)((?:__)((?:[^__]+))(?:__))/g;
 var Bold = Mark2.create({
   name: "bold",
   addOptions() {
@@ -23498,6 +23174,148 @@ var Bold = Mark2.create({
   addInputRules() {
     return [
       markInputRule({
+        find: starInputRegex,
+        type: this.type
+      }),
+      markInputRule({
+        find: underscoreInputRegex,
+        type: this.type
+      })
+    ];
+  },
+  addPasteRules() {
+    return [
+      markPasteRule({
+        find: starPasteRegex,
+        type: this.type
+      }),
+      markPasteRule({
+        find: underscorePasteRegex,
+        type: this.type
+      })
+    ];
+  }
+});
+
+// node_modules/@tiptap/extension-heading/dist/index.js
+var Heading = Node2.create({
+  name: "heading",
+  addOptions() {
+    return {
+      levels: [1, 2, 3, 4, 5, 6],
+      HTMLAttributes: {}
+    };
+  },
+  content: "inline*",
+  group: "block",
+  defining: true,
+  addAttributes() {
+    return {
+      level: {
+        default: 1,
+        rendered: false
+      }
+    };
+  },
+  parseHTML() {
+    return this.options.levels.map((level) => ({
+      tag: `h${level}`,
+      attrs: { level }
+    }));
+  },
+  renderHTML({ node, HTMLAttributes }) {
+    const hasLevel = this.options.levels.includes(node.attrs.level);
+    const level = hasLevel ? node.attrs.level : this.options.levels[0];
+    return [`h${level}`, mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+  },
+  addCommands() {
+    return {
+      setHeading: (attributes) => ({ commands: commands2 }) => {
+        if (!this.options.levels.includes(attributes.level)) {
+          return false;
+        }
+        return commands2.setNode(this.name, attributes);
+      },
+      toggleHeading: (attributes) => ({ commands: commands2 }) => {
+        if (!this.options.levels.includes(attributes.level)) {
+          return false;
+        }
+        return commands2.toggleNode(this.name, "paragraph", attributes);
+      }
+    };
+  },
+  addKeyboardShortcuts() {
+    return this.options.levels.reduce((items, level) => ({
+      ...items,
+      ...{
+        [`Mod-Alt-${level}`]: () => this.editor.commands.toggleHeading({ level })
+      }
+    }), {});
+  },
+  addInputRules() {
+    return this.options.levels.map((level) => {
+      return textblockTypeInputRule({
+        find: new RegExp(`^(#{1,${level}})\\s$`),
+        type: this.type,
+        getAttributes: {
+          level
+        }
+      });
+    });
+  }
+});
+
+// node_modules/@tiptap/extension-italic/dist/index.js
+var starInputRegex2 = /(?:^|\s)((?:\*)((?:[^*]+))(?:\*))$/;
+var starPasteRegex2 = /(?:^|\s)((?:\*)((?:[^*]+))(?:\*))/g;
+var underscoreInputRegex2 = /(?:^|\s)((?:_)((?:[^_]+))(?:_))$/;
+var underscorePasteRegex2 = /(?:^|\s)((?:_)((?:[^_]+))(?:_))/g;
+var Italic = Mark2.create({
+  name: "italic",
+  addOptions() {
+    return {
+      HTMLAttributes: {}
+    };
+  },
+  parseHTML() {
+    return [
+      {
+        tag: "em"
+      },
+      {
+        tag: "i",
+        getAttrs: (node) => node.style.fontStyle !== "normal" && null
+      },
+      {
+        style: "font-style=italic"
+      }
+    ];
+  },
+  renderHTML({ HTMLAttributes }) {
+    return ["em", mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+  },
+  addCommands() {
+    return {
+      setItalic: () => ({ commands: commands2 }) => {
+        return commands2.setMark(this.name);
+      },
+      toggleItalic: () => ({ commands: commands2 }) => {
+        return commands2.toggleMark(this.name);
+      },
+      unsetItalic: () => ({ commands: commands2 }) => {
+        return commands2.unsetMark(this.name);
+      }
+    };
+  },
+  addKeyboardShortcuts() {
+    return {
+      "Mod-i": () => this.editor.commands.toggleItalic(),
+      "Mod-I": () => this.editor.commands.toggleItalic()
+    };
+  },
+  addInputRules() {
+    return [
+      markInputRule({
         find: starInputRegex2,
         type: this.type
       }),
@@ -23521,6 +23339,39 @@ var Bold = Mark2.create({
   }
 });
 
+// node_modules/@tiptap/extension-paragraph/dist/index.js
+var Paragraph = Node2.create({
+  name: "paragraph",
+  priority: 1e3,
+  addOptions() {
+    return {
+      HTMLAttributes: {}
+    };
+  },
+  group: "block",
+  content: "inline*",
+  parseHTML() {
+    return [
+      { tag: "p" }
+    ];
+  },
+  renderHTML({ HTMLAttributes }) {
+    return ["p", mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+  },
+  addCommands() {
+    return {
+      setParagraph: () => ({ commands: commands2 }) => {
+        return commands2.setNode(this.name);
+      }
+    };
+  },
+  addKeyboardShortcuts() {
+    return {
+      "Mod-Alt-0": () => this.editor.commands.setParagraph()
+    };
+  }
+});
+
 // index.js
 var extensions2 = [
   TextStyle,
@@ -23529,16 +23380,20 @@ var extensions2 = [
   CharacterCount,
   Document,
   Text,
-  customExtensions.paragraph,
-  customExtensions.heading,
+  Paragraph,
+  Heading,
+  //customExtensions.paragraph,
+  //customExtensions.heading,
   Link,
   BulletList,
   ListItem,
   OrderedList,
   Bold,
-  customExtensions.italic,
+  Italic,
+  //customExtensions.italic,
   customExtensions.bnBibleResourceReference,
-  customExtensions.bnResourceReference
+  customExtensions.bnResourceReference,
+  customExtensions.commentsMark
 ];
 globalThis.getWordCountFromListOfTiptaps = (list) => {
   const editor = new Editor({ extensions: extensions2 });
@@ -23559,6 +23414,9 @@ globalThis.parseHtmlAsJson = (html2) => {
     console.error(error);
     return 0;
   }
+};
+globalThis.parseJsonAsHtml = (json) => {
+  return generateHTML(JSON.parse(json)[0].tiptap, extensions2);
 };
 globalThis.getWordCount = (html2) => {
   const editor = new Editor({ extensions: extensions2 });
