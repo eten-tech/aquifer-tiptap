@@ -42,6 +42,8 @@ export {
   getMarkAttributes,
   Editor,
   Extension,
+  Node,
+  Mark,
   type SingleCommands,
 } from "@tiptap/core";
 export { Bold } from "@tiptap/extension-bold";
