@@ -34,6 +34,7 @@ import {
   ParagraphWithIndentation,
   BulletListWithIndentation,
   OrderedListWithIndentation,
+  Footnote,
 } from "./custom-extensions";
 import History from "@tiptap/extension-history";
 
@@ -99,6 +100,7 @@ export const customExtensions = [
   ResourceReference,
   Comments,
   Implied,
+  Footnote,
   Video,
   OpenTranslatorsNotesGeneralComment,
   OpenTranslatorsNotesParagraphNote,
