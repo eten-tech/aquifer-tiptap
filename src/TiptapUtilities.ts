@@ -12,25 +12,29 @@ const formatOnlyExtensions = [
   ...customExtensions.map((n) => n.configure({})),
 ];
 
-globalThis.parseHtmlAsJson = (html: string) => {
+export function parseHtmlAsJson(html: string): string {
   try {
     return JSON.stringify(generateJSON(html, formatOnlyExtensions));
   } catch (error) {
     console.error(error);
     return "";
   }
-};
+}
 
-globalThis.parseJsonAsHtml = (json: string) => {
+export function parseJsonAsHtml(json: string, index = 0): string {
   try {
-    return generateHTML(JSON.parse(json)[0].tiptap, formatOnlyExtensions);
+    return generateHTML(JSON.parse(json)[index].tiptap, formatOnlyExtensions);
   } catch (error) {
     console.error(error);
     return "";
   }
-};
+}
 
-globalThis.getHtmlWordCount = (sourceHTML: string) => {
+export function getHtmlWordCount(sourceHTML: string): number {
   const plainText = sourceHTML.replace(/<[^>]*>/g, "");
   return plainText.split(/[\s\n\r\t\xa0]+/).filter(Boolean).length;
-};
+}
+
+globalThis.parseHtmlAsJson = parseHtmlAsJson;
+globalThis.parseJsonAsHtml = parseJsonAsHtml;
+globalThis.getHtmlWordCount = getHtmlWordCount;

@@ -15397,6 +15397,34 @@ var implied_default = Mark2.create({
   }
 });
 
+// src/custom-extensions/footnote.ts
+var footnote_default = Mark2.create({
+  name: "footnote",
+  parseHTML() {
+    return [
+      {
+        tag: "span",
+        getAttrs: (node) => {
+          const bnType = node.getAttribute("data-bnType");
+          if (bnType === "footnote") {
+            return {};
+          }
+          return false;
+        }
+      }
+    ];
+  },
+  renderHTML() {
+    return [
+      "span",
+      {
+        "data-bnType": "footnote"
+      },
+      ["span", 0]
+    ];
+  }
+});
+
 // src/custom-extensions/node-with-indentation.ts
 function extendNodeWithIndentOption(nodeType) {
   return nodeType.extend({
@@ -17579,6 +17607,7 @@ var customExtensions = [
   resource_reference_default,
   comments_default,
   implied_default,
+  footnote_default,
   video_default,
   general_comment_default,
   paragraph_note_default,
@@ -17606,9 +17635,9 @@ globalThis.parseHtmlAsJson = (html2) => {
     return "";
   }
 };
-globalThis.parseJsonAsHtml = (json) => {
+globalThis.parseJsonAsHtml = (json, index = 0) => {
   try {
-    return generateHTML(JSON.parse(json)[0].tiptap, formatOnlyExtensions);
+    return generateHTML(JSON.parse(json)[index].tiptap, formatOnlyExtensions);
   } catch (error) {
     console.error(error);
     return "";

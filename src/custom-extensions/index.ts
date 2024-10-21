@@ -13,6 +13,7 @@ import OpenTranslatorsNotesTranslationOptions from "./open-translators-notes/tra
 import OpenTranslatorsNotesTranslationOptionsDefaultOption from "./open-translators-notes/translation-options/default-translation-option";
 import OpenTranslatorsNotesTranslationOptionsAdditionalTranslationOptions from "./open-translators-notes/translation-options/additional-translation-options";
 import Implied from "./implied";
+import Footnote from "./footnote";
 import extendNodeWithIndentOption from "./node-with-indentation";
 
 const ParagraphWithIndentation = extendNodeWithIndentOption(Paragraph);
@@ -36,4 +37,5 @@ export {
   OpenTranslatorsNotesTranslationOptionsDefaultOption,
   OpenTranslatorsNotesTranslationOptionsAdditionalTranslationOptions,
   Implied,
+  Footnote,
 };
