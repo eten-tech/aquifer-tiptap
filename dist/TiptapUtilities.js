@@ -15398,8 +15398,11 @@ var implied_default = Mark2.create({
 });
 
 // src/custom-extensions/footnote.ts
-var footnote_default = Mark2.create({
+var footnote_default = Node2.create({
   name: "footnote",
+  inline: true,
+  group: "inline",
+  content: "inline*",
   parseHTML() {
     return [
       {
@@ -17620,30 +17623,18 @@ var customExtensions = [
   BulletListWithIndentation,
   OrderedListWithIndentation
 ];
-
-// src/TiptapUtilities.ts
 var formatOnlyExtensions = [
   ...officialMarks.map((m) => m.configure({})),
   ...officialNodes.map((n) => n.configure({})),
   ...customExtensions.map((n) => n.configure({}))
 ];
-globalThis.parseHtmlAsJson = (html2) => {
-  try {
-    return JSON.stringify(generateJSON(html2, formatOnlyExtensions));
-  } catch (error) {
-    console.error(error);
-    return "";
-  }
-};
-globalThis.parseJsonAsHtml = (json, index = 0) => {
-  try {
-    return generateHTML(JSON.parse(json)[index].tiptap, formatOnlyExtensions);
-  } catch (error) {
-    console.error(error);
-    return "";
-  }
-};
-globalThis.getHtmlWordCount = (sourceHTML) => {
-  const plainText = sourceHTML.replace(/<[^>]*>/g, "");
-  return plainText.split(/[\s\n\r\t\xa0]+/).filter(Boolean).length;
-};
+function parseHtmlAsJson(html2) {
+  return JSON.stringify(generateJSON(html2, formatOnlyExtensions));
+}
+function parseJsonAsHtml(json, index = 0) {
+  return generateHTML(JSON.parse(json)[index].tiptap, formatOnlyExtensions);
+}
+
+// src/TiptapUtilities.ts
+globalThis.parseHtmlAsJson = parseHtmlAsJson;
+globalThis.parseJsonAsHtml = parseJsonAsHtml;

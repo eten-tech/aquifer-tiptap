@@ -1,7 +1,10 @@
-import { Mark } from "@tiptap/core";
+import { Node } from "@tiptap/core";
 
-export default Mark.create({
+export default Node.create({
   name: "footnote",
+  inline: true,
+  group: "inline",
+  content: "inline*",
   parseHTML() {
     return [
       {

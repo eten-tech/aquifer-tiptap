@@ -4,7 +4,8 @@
   "main": "src/index.ts",
   "scripts": {
     "lint": "eslint --fix .",
-    "build-for-aquifer-server": "esbuild src/TiptapUtilities.ts --bundle --outfile=dist/TiptapUtilities.js --platform=node --target=node12"
+    "build-for-dotnet": "esbuild src/TiptapUtilities.ts --bundle --outfile=dist/TiptapUtilities.js --platform=node --target=node12",
+    "copy-to-content-loader": "cp ./dist/TiptapUtilities.js ../content-loader/src/ContentLoader/V8Engine/TiptapUtilities.js"
   },
   "dependencies": {
     "@tiptap/core": "^2.8.0",
