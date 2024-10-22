@@ -1,4 +1,4 @@
-import type { Extension, Mark, Node } from "@tiptap/core";
+import { type Extension, type Mark, type Node } from "@tiptap/core";
 import TextStyle from "@tiptap/extension-text-style";
 import Underline from "@tiptap/extension-underline";
 import CharacterCount from "@tiptap/extension-character-count";
@@ -37,6 +37,7 @@ import {
   Footnote,
 } from "./custom-extensions";
 import History from "@tiptap/extension-history";
+import { generateHTML, generateJSON } from "@tiptap/html";
 
 export { generateHTML, generateJSON } from "@tiptap/html";
 export {
@@ -123,4 +124,20 @@ export function configureAndOverrideExtensions(
     .filter((ext) => !overrideMap.has(ext.name))
     .map((ext) => ext.configure({}));
   return [...filteredBase, ...overrideExtensions];
+}
+
+// TO BE USED BY .NET
+
+const formatOnlyExtensions = [
+  ...officialMarks.map((m) => m.configure({})),
+  ...officialNodes.map((n) => n.configure({})),
+  ...customExtensions.map((n) => n.configure({})),
+];
+
+export function parseHtmlAsJson(html: string): string {
+  return JSON.stringify(generateJSON(html, formatOnlyExtensions));
+}
+
+export function parseJsonAsHtml(json: string, index = 0): string {
+  return generateHTML(JSON.parse(json)[index].tiptap, formatOnlyExtensions);
 }
