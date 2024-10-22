@@ -1,4 +1,4 @@
-import { type Extension, type Mark, type Node } from "@tiptap/core";
+import type { Extension, Mark, Node } from "@tiptap/core";
 import TextStyle from "@tiptap/extension-text-style";
 import Underline from "@tiptap/extension-underline";
 import CharacterCount from "@tiptap/extension-character-count";
