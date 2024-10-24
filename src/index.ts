@@ -65,6 +65,10 @@ export { ListItem } from "@tiptap/extension-list-item";
 export { Strike } from "@tiptap/extension-strike";
 export { Subscript } from "@tiptap/extension-subscript";
 export { Superscript } from "@tiptap/extension-superscript";
+import { Table } from "@tiptap/extension-table";
+import { TableCell } from "@tiptap/extension-table-cell";
+import { TableHeader } from "@tiptap/extension-table-header";
+import { TableRow } from "@tiptap/extension-table-row";
 export { Text } from "@tiptap/extension-text";
 export { TextStyle } from "@tiptap/extension-text-style";
 export { Underline } from "@tiptap/extension-underline";
@@ -80,6 +84,10 @@ export const officialNodes = [
   Text,
   Image,
   Link,
+  Table,
+  TableCell,
+  TableHeader,
+  TableRow,
 ];
 
 export const officialMarks = [
