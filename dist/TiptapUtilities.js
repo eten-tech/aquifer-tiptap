@@ -15247,13 +15247,28 @@ var paragraph_note_default = Node2.create({
   name: "OpenTranslatorsNotesParagraph",
   group: "block",
   content: "block+",
+  addAttributes() {
+    return {
+      startVerseId: {
+        default: null
+      },
+      endVerseId: {
+        default: null
+      }
+    };
+  },
   parseHTML() {
     return [
       {
         tag: "div",
         getAttrs: (element) => {
           if (element.getAttribute("data-bnType") === "OpenTranslatorsNotesParagraph") {
-            return {};
+            const startVerseId = element.getAttribute("data-startVerseId");
+            const endVerseId = element.getAttribute("data-endVerseId");
+            return {
+              startVerseId: startVerseId ? parseInt(startVerseId) : null,
+              endVerseId: endVerseId ? parseInt(endVerseId) : null
+            };
           }
           return false;
         }
@@ -15265,7 +15280,8 @@ var paragraph_note_default = Node2.create({
       "div",
       {
         "data-bnType": "OpenTranslatorsNotesParagraph",
-        ...HTMLAttributes
+        "data-startVerseId": HTMLAttributes.startVerseId,
+        "data-endVerseId": HTMLAttributes.endVerseId
       },
       0
     ];
@@ -15277,13 +15293,28 @@ var section_note_default = Node2.create({
   name: "OpenTranslatorsNotesSection",
   group: "block",
   content: "block+",
+  addAttributes() {
+    return {
+      startVerseId: {
+        default: null
+      },
+      endVerseId: {
+        default: null
+      }
+    };
+  },
   parseHTML() {
     return [
       {
         tag: "div",
         getAttrs: (element) => {
           if (element.getAttribute("data-bnType") === "OpenTranslatorsNotesSection") {
-            return {};
+            const startVerseId = element.getAttribute("data-startVerseId");
+            const endVerseId = element.getAttribute("data-endVerseId");
+            return {
+              startVerseId: startVerseId ? parseInt(startVerseId) : null,
+              endVerseId: endVerseId ? parseInt(endVerseId) : null
+            };
           }
           return false;
         }
@@ -15295,7 +15326,8 @@ var section_note_default = Node2.create({
       "div",
       {
         "data-bnType": "OpenTranslatorsNotesSection",
-        ...HTMLAttributes
+        "data-startVerseId": HTMLAttributes.startVerseId,
+        "data-endVerseId": HTMLAttributes.endVerseId
       },
       0
     ];
@@ -15307,13 +15339,22 @@ var translation_options_default = Node2.create({
   name: "OpenTranslatorsNotesTranslationOptions",
   group: "block",
   content: "block+",
+  addAttributes() {
+    return {
+      verse: {
+        default: null
+      }
+    };
+  },
   parseHTML() {
     return [
       {
         tag: "div",
         getAttrs: (element) => {
           if (element.getAttribute("data-bnType") === "OpenTranslatorsNotesTranslationOptions") {
-            return {};
+            return {
+              verse: element.getAttribute("data-verse")
+            };
           }
           return false;
         }
@@ -15325,7 +15366,7 @@ var translation_options_default = Node2.create({
       "div",
       {
         "data-bnType": "OpenTranslatorsNotesTranslationOptions",
-        ...HTMLAttributes
+        "data-verse": HTMLAttributes.verse
       },
       0
     ];
