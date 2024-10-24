@@ -5,16 +5,35 @@ export default Node.create({
 
   group: "block",
 
+  content: "inline*",
+
   parseHTML() {
     return [
       {
         tag: "p",
-        context: "OpenTranslatorsNotesTranslationOptions/",
+        priority: 51,
+        getAttrs: (node) => {
+          const bnType = (node as HTMLElement).getAttribute("data-bnType");
+          if (
+            bnType === "OpenTranslatorsNotesTranslationOptionsDefaultOption"
+          ) {
+            return {};
+          }
+
+          return false;
+        },
       },
     ];
   },
 
-  renderHTML() {
-    return ["p", 0];
+  renderHTML({ HTMLAttributes }) {
+    return [
+      "p",
+      {
+        "data-bnType": "OpenTranslatorsNotesTranslationOptionsDefaultOption",
+        ...HTMLAttributes,
+      },
+      0,
+    ];
   },
 });
