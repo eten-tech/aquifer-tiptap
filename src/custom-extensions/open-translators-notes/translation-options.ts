@@ -7,6 +7,14 @@ export default Node.create({
 
   content: "block+",
 
+  addAttributes() {
+    return {
+      verse: {
+        default: null,
+      },
+    };
+  },
+
   parseHTML() {
     return [
       {
@@ -16,7 +24,9 @@ export default Node.create({
             element.getAttribute("data-bnType") ===
             "OpenTranslatorsNotesTranslationOptions"
           ) {
-            return {};
+            return {
+              verse: element.getAttribute("data-verse"),
+            };
           }
           return false;
         },
@@ -29,7 +39,7 @@ export default Node.create({
       "div",
       {
         "data-bnType": "OpenTranslatorsNotesTranslationOptions",
-        ...HTMLAttributes,
+        "data-verse": HTMLAttributes.verse,
       },
       0,
     ];

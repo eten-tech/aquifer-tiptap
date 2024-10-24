@@ -7,6 +7,17 @@ export default Node.create({
 
   content: "block+",
 
+  addAttributes() {
+    return {
+      startVerseId: {
+        default: null,
+      },
+      endVerseId: {
+        default: null,
+      },
+    };
+  },
+
   parseHTML() {
     return [
       {
@@ -16,7 +27,12 @@ export default Node.create({
             element.getAttribute("data-bnType") ===
             "OpenTranslatorsNotesSection"
           ) {
-            return {};
+            const startVerseId = element.getAttribute("data-startVerseId");
+            const endVerseId = element.getAttribute("data-endVerseId");
+            return {
+              startVerseId: startVerseId ? parseInt(startVerseId) : null,
+              endVerseId: endVerseId ? parseInt(endVerseId) : null,
+            };
           }
           return false;
         },
@@ -29,7 +45,8 @@ export default Node.create({
       "div",
       {
         "data-bnType": "OpenTranslatorsNotesSection",
-        ...HTMLAttributes,
+        "data-startVerseId": HTMLAttributes.startVerseId,
+        "data-endVerseId": HTMLAttributes.endVerseId,
       },
       0,
     ];
