@@ -15336,16 +15336,31 @@ var translation_options_default = Node2.create({
 var default_translation_option_default = Node2.create({
   name: "OpenTranslatorsNotesTranslationOptionsDefaultOption",
   group: "block",
+  content: "inline*",
   parseHTML() {
     return [
       {
         tag: "p",
-        context: "OpenTranslatorsNotesTranslationOptions/"
+        priority: 51,
+        getAttrs: (node) => {
+          const bnType = node.getAttribute("data-bnType");
+          if (bnType === "OpenTranslatorsNotesTranslationOptionsDefaultOption") {
+            return {};
+          }
+          return false;
+        }
       }
     ];
   },
-  renderHTML() {
-    return ["p", 0];
+  renderHTML({ HTMLAttributes }) {
+    return [
+      "p",
+      {
+        "data-bnType": "OpenTranslatorsNotesTranslationOptionsDefaultOption",
+        ...HTMLAttributes
+      },
+      0
+    ];
   }
 });
 
@@ -15353,17 +15368,30 @@ var default_translation_option_default = Node2.create({
 var additional_translation_options_default = Node2.create({
   name: "OpenTranslatorsNotesTranslationOptionsAdditionalTranslationOptions",
   group: "block",
-  content: "block+",
+  content: "listItem+",
   parseHTML() {
     return [
       {
         tag: "ul",
-        context: "OpenTranslatorsNotesTranslationOptions/"
+        getAttrs: (node) => {
+          const bnType = node.getAttribute("data-bnType");
+          if (bnType === "OpenTranslatorsNotesTranslationOptionsAdditionalTranslationOptions") {
+            return {};
+          }
+          return false;
+        }
       }
     ];
   },
-  renderHTML() {
-    return ["ul", 0];
+  renderHTML({ HTMLAttributes }) {
+    return [
+      "ul",
+      {
+        "data-bnType": "OpenTranslatorsNotesTranslationOptionsAdditionalTranslationOptions",
+        ...HTMLAttributes
+      },
+      0
+    ];
   }
 });
 
