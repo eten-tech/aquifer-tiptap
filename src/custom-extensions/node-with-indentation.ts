@@ -4,6 +4,7 @@ export default function extendNodeWithIndentOption(nodeType: Node) {
   return nodeType.extend({
     addAttributes() {
       return {
+        ...this.parent?.(),
         indent: {
           default: undefined,
           parseHTML: (element) =>
