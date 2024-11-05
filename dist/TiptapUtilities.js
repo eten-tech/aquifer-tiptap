@@ -16337,7 +16337,9 @@ var footnote_default = Node2.create({
 function extendNodeWithIndentOption(nodeType) {
   return nodeType.extend({
     addAttributes() {
+      var _a2;
       return {
+        ...(_a2 = this.parent) == null ? void 0 : _a2.call(this),
         indent: {
           default: void 0,
           parseHTML: (element) => element.getAttribute("data-indent") === null ? void 0 : parseInt(element.getAttribute("data-indent")),
