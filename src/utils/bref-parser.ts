@@ -1,4 +1,6 @@
-function bookMapper(book: string) {
+function bookMapper(book: string | undefined) {
+  if (!book) return undefined;
+
   switch (book.toUpperCase()) {
     case "GEN":
       return "01";
@@ -225,25 +227,27 @@ function pad(input: string) {
 
 export function parseBref(bref: string) {
   const bookCode = bref.split(".")[0];
-  let startBnBookNumber = bookMapper(bookCode);
+  const startBnBookNumber = bookMapper(bookCode);
   let endBnBookNumber = startBnBookNumber;
   bref = bref.replace(`${bookCode}.`, "");
   const refs = bref.split(",");
 
-  let lastChapter = "0";
+  let lastChapter: string | undefined;
   const passages: { startVerse: number; endVerse: number }[] = [];
   for (const i in refs) {
     const ref = refs[i];
 
-    const verseParts = ref.split(/[.:]/);
-    let startChapter: string;
-    let endChapter: string;
-    let startVerse: string;
-    let endVerse: string;
+    const verseParts = ref?.split(/[.:]/);
+    let startChapter: string | undefined;
+    let endChapter: string | undefined;
+    let startVerse: string | undefined;
+    let endVerse: string | undefined;
     let verseRange: string[];
 
-    if (verseParts.length === 4 && verseParts[1].indexOf("--") > -1) {
-      let bookSplit = verseParts[1].split("--");
+    if (!verseParts) continue;
+
+    if (verseParts.length === 4 && verseParts[1]!.indexOf("--") > -1) {
+      const bookSplit = verseParts[1]!.split("--");
       startChapter = verseParts[0];
       startVerse = bookSplit[0];
       endBnBookNumber = bookMapper(bookSplit[1]);
@@ -251,21 +255,21 @@ export function parseBref(bref: string) {
       endVerse = verseParts[3];
     } else if (verseParts.length === 3) {
       startChapter = verseParts[0];
-      let verseChapterSplit = verseParts[1].split(/-|–/);
+      const verseChapterSplit = verseParts[1]!.split(/-|–/);
       startVerse = verseChapterSplit[0];
       endChapter = verseChapterSplit[1];
       endVerse = verseParts[2];
     } else if (verseParts.length === 1) {
       startChapter = lastChapter;
       endChapter = startChapter;
-      verseRange = verseParts[0].split(/-|–/);
+      verseRange = verseParts[0]!.split(/-|–/);
       startVerse = verseRange[0];
       endVerse = verseRange.length > 1 ? verseRange[1] : startVerse;
     } else if (verseParts.length === 2) {
       startChapter = verseParts[0];
       endChapter = startChapter;
       lastChapter = startChapter;
-      verseRange = verseParts[1].split(/-|–/);
+      verseRange = verseParts[1]!.split(/-|–/);
       startVerse = verseRange[0];
       endVerse = verseRange.length > 1 ? verseRange[1] : startVerse;
     } else if (verseParts.length === 4) {
@@ -273,6 +277,17 @@ export function parseBref(bref: string) {
       continue;
     } else {
       throw Error(`Error on: ${bref}`);
+    }
+
+    if (
+      !startBnBookNumber ||
+      !startChapter ||
+      !startVerse ||
+      !endBnBookNumber ||
+      !endChapter ||
+      !endVerse
+    ) {
+      throw Error(`Invalid reference: ${bref}`);
     }
 
     try {

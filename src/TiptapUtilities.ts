@@ -1,4 +1,7 @@
 import { parseHtmlAsJson, parseJsonAsHtml } from ".";
 
-globalThis.parseHtmlAsJson = parseHtmlAsJson;
-globalThis.parseJsonAsHtml = parseJsonAsHtml;
+// eslint-disable-next-line
+(globalThis as any).parseHtmlAsJson = parseHtmlAsJson;
+
+// eslint-disable-next-line
+(globalThis as any).parseJsonAsHtml = parseJsonAsHtml;

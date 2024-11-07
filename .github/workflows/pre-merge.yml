@@ -21,7 +21,5 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: Build
-        run: yarn build-for-dotnet
       - name: ESLint
         run: yarn run lint

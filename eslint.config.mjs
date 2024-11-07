@@ -9,4 +9,15 @@ export default tseslint.config(
   {
     ignores: ["dist/", "src/testing.ts"],
   },
+  {
+    rules: {
+      eqeqeq: ["error", "always"],
+      "no-console": "error",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      ],
+      "@typescript-eslint/no-non-null-assertion": "off",
+    },
+  },
 );
