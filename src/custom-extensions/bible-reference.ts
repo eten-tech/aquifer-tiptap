@@ -1,4 +1,6 @@
 import { Mark } from "@tiptap/core";
+import { parseBref } from "../utils/bref-parser";
+import { parseQueryParams } from "../utils/href-parser";
 
 export default Mark.create({
   name: "bibleReference",
@@ -29,6 +31,23 @@ export default Mark.create({
                   (node as HTMLElement).getAttribute("data-verses") ?? "[]",
                 ) as [number, number][]
               ).map(([startVerse, endVerse]) => ({ startVerse, endVerse })),
+            };
+          }
+
+          return false;
+        },
+      },
+      {
+        tag: "a",
+        getAttrs: (node) => {
+          let href = node.getAttribute("href");
+          if (!href) return false;
+
+          const params = parseQueryParams(href);
+
+          if (params.bref) {
+            return {
+              verses: parseBref(params.bref),
             };
           }
 
