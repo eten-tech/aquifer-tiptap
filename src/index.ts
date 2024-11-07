@@ -8,8 +8,6 @@ import Image from "@tiptap/extension-image";
 import ListItem from "@tiptap/extension-list-item";
 import Link from "@tiptap/extension-link";
 import Bold from "@tiptap/extension-bold";
-import Heading from "@tiptap/extension-heading";
-import Italic from "@tiptap/extension-italic";
 import CodeBlock from "@tiptap/extension-code-block";
 import HardBreak from "@tiptap/extension-hard-break";
 import HorizontalRule from "@tiptap/extension-horizontal-rule";
@@ -24,6 +22,8 @@ import {
   ResourceReference,
   Comments,
   Implied,
+  Heading,
+  Italic,
   OpenTranslatorsNotesGeneralComment,
   OpenTranslatorsNotesParagraphNote,
   OpenTranslatorsNotesSectionNote,
@@ -59,7 +59,6 @@ export { Highlight } from "@tiptap/extension-highlight";
 export { History } from "@tiptap/extension-history";
 export { HorizontalRule } from "@tiptap/extension-horizontal-rule";
 export { Image } from "@tiptap/extension-image";
-export { Italic } from "@tiptap/extension-italic";
 export { Link } from "@tiptap/extension-link";
 export { ListItem } from "@tiptap/extension-list-item";
 export { Strike } from "@tiptap/extension-strike";
@@ -78,7 +77,6 @@ export const officialNodes = [
   Document,
   CodeBlock,
   HardBreak,
-  Heading,
   HorizontalRule,
   ListItem,
   Text,
@@ -93,7 +91,6 @@ export const officialNodes = [
 export const officialMarks = [
   Bold,
   Code,
-  Italic,
   Strike,
   Underline,
   Highlight,
@@ -111,6 +108,8 @@ export const customExtensions = [
   Implied,
   Footnote,
   Video,
+  Italic,
+  Heading,
   OpenTranslatorsNotesGeneralComment,
   OpenTranslatorsNotesParagraphNote,
   OpenTranslatorsNotesSectionNote,

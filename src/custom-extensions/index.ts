@@ -13,6 +13,8 @@ import OpenTranslatorsNotesTranslationOptions from "./open-translators-notes/tra
 import OpenTranslatorsNotesTranslationOptionsDefaultOption from "./open-translators-notes/translation-options/default-translation-option";
 import OpenTranslatorsNotesTranslationOptionsAdditionalTranslationOptions from "./open-translators-notes/translation-options/additional-translation-options";
 import Implied from "./implied";
+import Italic from "./italic";
+import Heading from "./heading";
 import Footnote from "./footnote";
 import extendNodeWithIndentOption from "./node-with-indentation";
 
@@ -26,6 +28,8 @@ export {
   BibleReference,
   ResourceReference,
   Comments,
+  Italic,
+  Heading,
   ParagraphWithIndentation,
   BulletListWithIndentation,
   OrderedListWithIndentation,
