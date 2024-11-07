@@ -40,7 +40,7 @@ export default Mark.create({
       {
         tag: "a",
         getAttrs: (node) => {
-          let href = node.getAttribute("href");
+          const href = node.getAttribute("href");
           if (!href) return false;
 
           const params = parseQueryParams(href);
