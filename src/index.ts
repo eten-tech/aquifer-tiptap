@@ -122,6 +122,20 @@ export const customExtensions = [
   OrderedListWithIndentation,
 ];
 
+/**
+ * Configures and merges two arrays of extensions while handling overrides.
+ * Base extensions that share names with override extensions are filtered out.
+ * All remaining extensions are configured with empty options.
+ *
+ * This is helpful when you need to maintain a base set of extensions while allowing
+ * for specific configurations or extensions to be overridden. It preserves the
+ * flexibility of reusing the base array (i.e. officialMarks, customExtensions, etc)
+ * while enabling custom configurations for particular use cases.
+ *
+ * @param baseExtensions - Array of initial Node, Mark, or Extension objects
+ * @param overrideExtensions - Array of Node, Mark, or Extension objects that take precedence
+ * @returns Combined array of configured extensions with overrides applied
+ */
 export function configureAndOverrideExtensions(
   baseExtensions: (Node | Mark | Extension)[],
   overrideExtensions: (Node | Mark | Extension)[],

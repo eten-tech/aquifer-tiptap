@@ -22,4 +22,6 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: ESLint
-        run: yarn run lint
+        run: yarn lint
+      - name: Test
+        run: yarn test

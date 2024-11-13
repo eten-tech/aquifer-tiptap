@@ -225,12 +225,25 @@ function pad(input: string) {
   }
 }
 
+/**
+ * Parses a Bible reference string into an array of verse ranges.
+ * @param bref - A string representing one or more Bible references (e.g., "GEN.1:1-3" or "MATT.5:3,4,5-7")
+ * @returns An array of objects containing startVerse and endVerse numbers
+ * @throws Error if the reference format is invalid or cannot be parsed
+ * @example
+ * parseBref("GEN.1:1-3") // returns [{startVerse: 101001001, endVerse: 101001003}]
+ * parseBref("MATT.5:3,4,5-7") // returns [
+ *   {startVerse: 141005003, endVerse: 141005003},
+ *   {startVerse: 141005004, endVerse: 141005004},
+ *   {startVerse: 141005005, endVerse: 141005007}
+ * ]
+ */
 export function parseBref(bref: string) {
   const bookCode = bref.split(".")[0];
   const startBnBookNumber = bookMapper(bookCode);
   let endBnBookNumber = startBnBookNumber;
   bref = bref.replace(`${bookCode}.`, "");
-  const refs = bref.split(",");
+  const refs = bref.split(/,|;/);
 
   let lastChapter: string | undefined;
   const passages: { startVerse: number; endVerse: number }[] = [];
