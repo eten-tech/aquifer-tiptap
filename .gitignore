@@ -2,4 +2,3 @@ node_modules
 .idea
 src/testing.ts
 test.html
-dist/
