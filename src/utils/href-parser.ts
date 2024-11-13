@@ -1,3 +1,8 @@
+/**
+ * Parses a query string into an object of key-value pairs. Similar to URLSearchParams.
+ * @param queryString - URL query string with or without leading question mark
+ * @returns Object containing parsed query parameters as key-value pairs
+ */
 export function parseQueryParams(queryString: string) {
   const params: Record<string, string> = {};
   const searchParams = queryString.startsWith("?")
