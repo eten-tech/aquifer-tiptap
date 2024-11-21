@@ -9,3 +9,7 @@ The expectation is that other projects will extend the custom types with more ad
 ## .NET Usage
 
 Some .NET projects use this library as well, through JSEngine.
+
+## Releasing
+
+After merging a PR, manually create a GitHub release and increment the version number.
